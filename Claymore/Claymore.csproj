@@ -1,0 +1,151 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{2D3E5CE3-A5B5-42E6-A686-D66AEB2CE7CB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Claymore</RootNamespace>
+    <AssemblyName>Claymore</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Attributes\ActionAttribute.cs" />
+    <Compile Include="Attributes\AuthorizeAttribute.cs" />
+    <Compile Include="Attributes\OutputCacheAttribute.cs" />
+    <Compile Include="Attributes\PageUrlAttribute.cs" />
+    <Compile Include="Attributes\SessionModeAttribute.cs" />
+    <Compile Include="Authentication\MyFormsPrincipal.cs" />
+    <Compile Include="Authentication\PSO\Common\ConfigManager.cs" />
+    <Compile Include="Authentication\PSO\Common\ConvertJson.cs" />
+    <Compile Include="Authentication\PSO\Common\KeyManager.cs" />
+    <Compile Include="Authentication\PSO\Common\PSORequest.cs" />
+    <Compile Include="Authentication\PSO\Common\PSOTicket.cs" />
+    <Compile Include="Authentication\PSO\Common\SSOResponse.cs" />
+    <Compile Include="Authentication\PSO\Common\SSOTicket.cs" />
+    <Compile Include="Authentication\PSO\Common\Ticket.cs" />
+    <Compile Include="Authentication\PSO\Common\TicketCreator.cs" />
+    <Compile Include="Authentication\PSO\Cryptography\Common.cs" />
+    <Compile Include="Authentication\PSO\Cryptography\Decrypter.cs" />
+    <Compile Include="Authentication\PSO\Cryptography\Encrypter.cs" />
+    <Compile Include="Authentication\PSO\Cryptography\KeyMaker.cs" />
+    <Compile Include="Authentication\SerializeObj.cs" />
+    <Compile Include="Authentication\SSO\Common\ConfigManager.cs" />
+    <Compile Include="Authentication\SSO\Common\KeyManager.cs" />
+    <Compile Include="Authentication\SSO\Common\PSORequest.cs" />
+    <Compile Include="Authentication\SSO\Common\PSOTicket.cs" />
+    <Compile Include="Authentication\SSO\Common\SSOResponse.cs" />
+    <Compile Include="Authentication\SSO\Common\SSOTicket.cs" />
+    <Compile Include="Authentication\SSO\Common\Ticket.cs" />
+    <Compile Include="Authentication\SSO\Common\TicketCreator.cs" />
+    <Compile Include="Authentication\SSO\Cryptography\Common.cs" />
+    <Compile Include="Authentication\SSO\Cryptography\Decrypter.cs" />
+    <Compile Include="Authentication\SSO\Cryptography\Encrypter.cs" />
+    <Compile Include="Authentication\SSO\Cryptography\KeyMaker.cs" />
+    <Compile Include="Authentication\XmlHelper.cs" />
+    <Compile Include="Description\ActionDescription.cs" />
+    <Compile Include="Description\BaseDescription.cs" />
+    <Compile Include="Description\ControllerActionPair.cs" />
+    <Compile Include="Description\ControllerDescription.cs" />
+    <Compile Include="Description\DataMember.cs" />
+    <Compile Include="Description\InvokeInfo.cs" />
+    <Compile Include="Description\ModelDescripton.cs" />
+    <Compile Include="Extensions\MethodInfoExtensions.cs" />
+    <Compile Include="Extensions\ReflectionExtensions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Extensions\TypeExtensions.cs" />
+    <Compile Include="Factory\DynamicMethodFactory.cs" />
+    <Compile Include="Factory\MethodInvokerFactory.cs" />
+    <Compile Include="Factory\ReflectMethodBase.cs" />
+    <Compile Include="GetDataFormRequest\ActionParametersProviderFactory.cs" />
+    <Compile Include="GetDataFormRequest\FormDataProvider.cs" />
+    <Compile Include="GetDataFormRequest\IActionParametersProvider.cs" />
+    <Compile Include="Handler\ActionExecutor.cs" />
+    <Compile Include="Handler\ActionHandler.cs" />
+    <Compile Include="Handler\IActionResult.cs" />
+    <Compile Include="Handler\PageResult.cs" />
+    <Compile Include="Handler\RedirectResult.cs" />
+    <Compile Include="Handler\UcResult.cs" />
+    <Compile Include="Handler\XmlResult.cs" />
+    <Compile Include="Helper\Enumerable.cs" />
+    <Compile Include="Helper\ExceptionHelper.cs" />
+    <Compile Include="Helper\HttpContextHelper.cs" />
+    <Compile Include="Helper\JsonHelper.cs" />
+    <Compile Include="Helper\ModelHelper.cs" />
+    <Compile Include="Helper\MyJsonHelper.cs" />
+    <Compile Include="Helper\ReflectionHelper.cs" />
+    <Compile Include="Helper\UrlHelper.cs" />
+    <Compile Include="Helper\XmlHelper.cs" />
+    <Compile Include="Helper\XmlToJson.cs" />
+    <Compile Include="OutPut\PageExecutor.cs" />
+    <Compile Include="OutPut\ResponseWriter.cs" />
+    <Compile Include="OutPut\UcExecutor.cs" />
+    <Compile Include="Pipeline\AjaxHandlerFactory.cs" />
+    <Compile Include="Pipeline\BaseActionHandlerFactory.cs" />
+    <Compile Include="Pipeline\MvcPageHandlerFactory.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="View\MyBaseMasterPage.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="View\MyBasePage.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="View\MyBaseUserControl.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="View\MyPageView.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="View\MyUserControlView.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="View\ViewType.cs" />
+    <Compile Include="View\ViewTypeParserFilter.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Authentication\统一身份认证.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Authentication\PSO\SSO.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Authentication\SSO\SSO.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

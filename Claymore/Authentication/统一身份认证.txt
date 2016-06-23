@@ -1,0 +1,178 @@
+子站点登录页面
+在不改动原网站验证的基础上，增加统一身份验证的业务
+原来的验证还是有效，只是接入不同了,当用户访问某个需要登录才能访问
+原来的验证发现用户没有登录，跳转到登录页面,登录页面判断
+是否收到了来自 主站点的 请求参数
+如果收到了，
+引用
+using Claymore.Authentication.Common;
+
+using Claymore.Authentication;
+
+子站点对接时，我们将我们的DLL与配制文件一起发送给子站点对接人员
+子站点引用我们的DLL，并将我们给的SSO.config文件放到子站点的bin目录中
+
+	   /*子站点登录页面的验证*/
+             //验证用户是否已经登录
+            if (HttpContext.Current.Request.IsAuthenticated) {
+                //已经登录，则跳转到默认页面
+                return new RedirectResult("/manage/default.aspx");
+            }
+            //目标地址
+            string url = HttpContext.Current.Request["ReturnUrl"];
+           
+            string ssoresponse =HttpContext.Current.Request.QueryString[ConfigManager.SSOKey];
+           
+            if (string.IsNullOrEmpty(ssoresponse) == false)
+            {
+                //收到了来自主站点的响应
+                SSOResponse sr = new SSOResponse(ssoresponse);
+                //创建本地的ticket
+                PSOTicket tc = sr.CreatePSOTicket() as PSOTicket;
+                //保存ticket 到cookie中
+                tc.SaveTicket(ConfigManager.SiteID, 10);
+		 //tc.Createdate 这个时间是ticket 在主站点的创建时间，需要时请进行判断
+                //标记登录,这里使用的是form登录
+                MyFormsPrincipal<PSOTicket>.SignIn(tc.Username, tc, 10);
+                //页面跳转
+                if (string.IsNullOrEmpty(sr.TargetUrl)) {
+                  return  new RedirectResult(url);
+                }
+                return new RedirectResult(sr.TargetUrl);
+            }
+            else {
+                //没有收到来自主站点的请求参数
+                Ticket tc = new PSOTicket();
+                //加载本地的票据信息
+                if (!tc.LoadTicket(ConfigManager.SiteID))
+                {
+                    //没有本地登录票据信息
+                    //创建子站点的PSO请求
+                    PSORequest request = new PSORequest();
+                    //设置返回的URL
+                    request.TargetUrl = url;
+                    string requeststr = request.CreateHash();
+
+                    //转到认证页面,如果已经认证就返回,没有认证就要登录
+                    request.CreateSSOUrl();
+                    //跳转到主站点进行验证
+                    return new RedirectResult(request.CreateSSOUrl());
+                }
+                else { 
+                    //加载成功,存在本地票据，显示页面
+                    return new PageResult(null, null);
+                }
+            }
+           
+子站点退出页面 逻辑
+ System.Web.Security.FormsAuthentication.SignOut();
+            
+            PSOTicket ticket = new PSOTicket();
+            if (ticket.LoadTicket(ConfigManager.SiteID))
+            {
+                ticket.SingOut(ConfigManager.SiteID);
+            }
+            return new RedirectResult("/default.aspx");
+
+
+/*主站点配制*/
+默认的配制是 所有的子站点的配制文件都放在根目录下 PSOSite 文件夹中,文件名与站点ID对应
+假设有子站点名为 PSOSite,则要有这样的一个文件 PSOSite\PSOSite.config
+内容为
+qP70966AcZCQyXR+3P1mfjmqqxdkagom
+FnZ+19kJbQ8=
+主站点上调用下面的方法，就可以创建子站点的配制文件
+KeyManager.UpdateKey("PSO");
+
+交付给对接的子站点时，只用将下面的数据填充好，保存为SSO.config，交付就可以了
+<configuration>
+  <appSettings>
+    <add key="SiteID" value="PSOSite"/><!--子站点的ID-->
+    <add key="Key" value="qP70966AcZCQyXR+3P1mfjmqqxdkagom"/><!--生成的KEY-->
+    <add key="IV" value="FnZ+19kJbQ8="/><!--生成的IV-->
+    <add key="SSOKey" value="SSOToken"/><!--请根据需要自行修改-->
+    <add key="KeeperUrl" value="http://www.passport.com/keeper.aspx"/><!--主站点的keeper页面路径-->
+    <add key="SignOutUrl" value="http://www.passport.com/signout.aspx"/><!--主站点的退出页面路径-->
+  </appSettings>
+</configuration>
+
+子站点发起的请求，一般都是到keeper页面
+		//子站点请求的参数
+            string psorequest = SSOToken;
+            //与子站点约定好的响应Key
+            string RSKey = ConfigManager.SSOKey;
+            string loginurl = "/sso/login.aspx";
+            if (psorequest != null)
+            {
+                //收到来自子站点的请求参数
+                //PSORequest pr = new PSORequest(psorequest, "qP70966AcZCQyXR+3P1mfjmqqxdkagom", "FnZ+19kJbQ8=");
+                PSORequest pr = new PSORequest(psorequest);
+                SSOResponse sr = new SSOResponse(pr);
+                Ticket tc = new SSOTicket();
+                //验证是否已经登录且存在SSO票据
+                if (HttpContext.Current.Request.IsAuthenticated && tc.LoadTicket(ConfigManager.SiteID))
+                {
+                    //用户已经在主站点登录，创建SSO的返回请求
+                    string ssorequest = sr.CreateResponseString(tc);
+                    bool flag = pr.Returnurl.IndexOf("?") > 0;
+                    string url = pr.Returnurl + (flag ? "&" : "?") + ConfigManager.SSOKey + "=" + ssorequest;
+                    //返回到跳转过来的成员站点,并加上SSO票据
+                    //Context.Response.Redirect(url);
+                    return new RedirectResult(url);
+                }
+                else
+                {
+                    //SSO票据加载失败,证明还没有进行登录,转到登录页面
+                    //Context.Response.Redirect(loginurl + "?" + RSKey + "=" + psorequest);
+                    return new RedirectResult(loginurl + "?" + RSKey + "=" + psorequest);
+                }
+            }
+            else
+            {
+                //没有收到客户端的PSO票据,直接要求登录
+                return new RedirectResult(loginurl + "?" + RSKey + "=" + psorequest);
+            }
+
+主站点登录页面登录逻辑
+验证用户名与密码成功后
+UserModel model = new UserModel() { passWord = "ivwshjj", userId = 100, userName = username,roleId=1 };
+
+                string json = (new JavaScriptSerializer()).Serialize(model);
+                //sso.config
+                SSOTicket ticket = new SSOTicket();
+                ticket.Createdate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                ticket.Expires = DateTime.Now.AddDays(1).ToString("yyyy-MM-dd HH:mm:ss");
+                ticket.Ticketdata = json;
+                ticket.Userid = "1";
+                ticket.Username = username;
+		//创建本地SSO Ticket,保存到cookie
+                ticket.SaveTicket(ConfigManager.SiteID, 60);
+		//修改登录状态
+                MyFormsPrincipal<SSOTicket>.SignIn(username, ticket, 10);
+                string psorequest = SSOToken;
+                if (psorequest != null)
+                {
+                    //收到来自子站点的请求
+                    PSORequest pr = new PSORequest(psorequest);
+		    //创建响应的SSO请求返回给子站点
+                    SSOResponse sr = new SSOResponse(pr);
+                    string and = pr.Returnurl.IndexOf("?") > 0 ? "&" : "?";
+                    string url = pr.Returnurl + and + ConfigManager.SSOKey + "=" + sr.CreateResponseString(ticket);
+		    //跳转回子站点
+                    return new RedirectResult(url);
+                }
+                else
+                {
+			//没有收到，登录成功后跳转到默认页面
+                    return new RedirectResult("/manage/index.aspx");
+                }
+
+
+主站点退出逻辑
+
+System.Web.Security.FormsAuthentication.SignOut();
+            SSOTicket ticket = new SSOTicket();
+            if (ticket.LoadTicket(ConfigManager.SiteID)) {
+                ticket.SingOut(ConfigManager.SiteID);
+            }
+            return new RedirectResult("/login.html");

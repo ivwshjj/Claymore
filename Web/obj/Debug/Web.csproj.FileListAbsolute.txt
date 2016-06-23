@@ -1,0 +1,9 @@
+C:\GitPub\2.0\Claymore\Web\obj\Debug\Web.csprojResolveAssemblyReference.cache
+C:\GitPub\2.0\Claymore\Web\bin\Web.dll
+C:\GitPub\2.0\Claymore\Web\bin\Web.pdb
+C:\GitPub\2.0\Claymore\Web\bin\Claymore.dll
+C:\GitPub\2.0\Claymore\Web\bin\Claymore.pdb
+C:\GitPub\2.0\Claymore\Web\obj\Debug\Web.dll
+C:\GitPub\2.0\Claymore\Web\obj\Debug\Web.pdb
+C:\GitPub\2.0\Claymore\Web\bin\Authentication\PSO\SSO.config
+C:\GitPub\2.0\Claymore\Web\bin\Authentication\SSO\SSO.config

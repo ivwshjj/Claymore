@@ -1,0 +1,7 @@
+C:\GitPub\2.0\Claymore\WebTest\bin\WebTest.dll
+C:\GitPub\2.0\Claymore\WebTest\bin\WebTest.pdb
+C:\GitPub\2.0\Claymore\WebTest\bin\Claymore.dll
+C:\GitPub\2.0\Claymore\WebTest\bin\Claymore.pdb
+C:\GitPub\2.0\Claymore\WebTest\obj\Debug\WebTest.dll
+C:\GitPub\2.0\Claymore\WebTest\obj\Debug\WebTest.pdb
+C:\GitPub\2.0\Claymore\WebTest\obj\Debug\WebTest.csprojResolveAssemblyReference.cache
